@@ -131,4 +131,17 @@ console.log("El gasto total de viáticos para todos los vehículos es de $"+viat
 }
 
 
-agregarVehiculos()
+// Si deseo saber si un vehiculo tiene un alto costo de combustible usando el metodo "Find()"
+
+function consumoAlto(vehiculo) {
+    return vehiculo.consumoTotal > "20000";
+}
+
+agregarVehiculos();
+
+let findConsumo = vehiculos.find(consumoAlto);
+if (findConsumo) {
+    console.log("Vehículo con alto consumo encontrado:", findConsumo);
+} else {
+    console.log("No se encontraron vehículos con alto consumo.");
+}
