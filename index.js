@@ -15,7 +15,7 @@ class Vehiculo {
 }
 
 
-//cálculo del precio por kilómetro (consumo de auto promedio 12 km*litro)
+//cálculo del precio por kilómetro (consumo de auto promedio 12 km * litro)
 
 function consumoCombustible() {
     let consumoPromedio = 12;
@@ -101,6 +101,11 @@ function registrarVehiculo() {
 
     vehiculos.push(new Vehiculo(consumo, peaje, comida, manten));
     console.log("Vehículo registrado:", vehiculos[vehiculos.length - 1]);
+    
+    for (let Vehiculo of vehiculos){
+        console.log("El gasto de viáticos de este vehiculo es de $" + Vehiculo.calcularViaticos())
+    }
+    
 }
 
 
