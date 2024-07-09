@@ -1,0 +1,29 @@
+body{
+    background-color: #EAEDED;
+}
+
+h1{
+margin-bottom: 3rem;
+margin-top: 2rem;
+text-align: center;
+font-weight: bold;
+}
+
+.botones{
+    margin-left: 30px;
+}
+
+button{
+    margin: 20px 5px 20px 5px;
+}
+
+#resultados{
+    margin-bottom: 20px;
+    font-weight: 600;
+    margin-left: 30px;
+}
+
+#resultadosAmpliados{
+    font-style: italic;
+    margin-left: 1rem;
+}

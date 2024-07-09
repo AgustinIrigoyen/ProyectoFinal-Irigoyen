@@ -1,4 +1,3 @@
-
 // CALCULADORA DE VIATICOS
 
 class Vehiculo {
@@ -9,139 +8,116 @@ class Vehiculo {
         this.mantenimiento = mantenimiento;
     }
 
-    calcularViaticos(){
-        return (this.consumoTotal + this.peajes + this.alimentos + this.mantenimiento)
+    calcularViaticos() {
+        return this.consumoTotal + this.peajes + this.alimentos + this.mantenimiento;
     }
 }
-
-
-//cálculo del precio por kilómetro (consumo de auto promedio 12 km * litro)
-
-function consumoCombustible() {
-    let consumoPromedio = 12;
-    let precioCombustible;
-
-    precioCombustible = Number(prompt("Ingrese el precio del litro de combustible."));
-
-    while (isNaN(precioCombustible) || (precioCombustible<0)) {
-        alert("No es un precio válido.");
-        precioCombustible = Number(prompt("Ingrese el precio del litro de combustible."));
-    };
-    
-    let resultado = precioCombustible / consumoPromedio;
-    return resultado;
-}
-
-
-//consumo del automovil * kilometros recorridos
-
-function consumoTotal() {
-    let kilometrosTotales;
-
-    kilometrosTotales = Number(prompt("Ingrese la cantidad de kilómetros totales recorridos."));
-
-    while (isNaN(kilometrosTotales) || (kilometrosTotales<0)) {
-        alert("No es un número válido.");
-        kilometrosTotales = Number(prompt("Ingrese la cantidad de kilómetros totales recorridos."))
-    };
-
-    let resultado = parseInt(kilometrosTotales * consumoCombustible());
-    console.log(resultado);
-    return resultado
-
-}
-//declarar todo junto con consumoTotal()
-
-
-//gasto de peajes
-
-function peajes() {
-let peajes = Number(prompt("Ingrese el gasto total de peajes. Si no hubo gastos indique 0."))
-
-if (peajes > 0) {
-    alert("Su total de peajes es $" + peajes)
-} else {
-    alert("No tuvo gastos en peajes.")
-}
-return peajes;
-}
-
-//gasto de alimentos
-
-function alimentos(){
-let alimentos = Number(prompt("Ingrese el gasto total de alimentos. Si no hubo gastos indique 0."))
-
-if (alimentos > 0) {
-    alert("Su total de alimentos es $" + alimentos)
-} else {
-    alert("No tuvo gastos en alimentos.")
-}
-return alimentos;
-}
-
-function mantenimiento(){
-let mantenimiento = Number(prompt("Si tuvo algún gasto de mantenimiento del vehiculo ingreselo, si no hubo ingrese 0."))
-
-if (mantenimiento > 0){
-    alert("Su gasto de mantenimiento es $" + mantenimiento)
-} else {
-    alert("No tuvo gastos de mantenimiento.")
-}
-return mantenimiento;
-}
-
 
 let vehiculos = [];
 
+function guardarVehiculosEnStorage() {
+    let vehiculosJson = JSON.stringify(vehiculos);
+    sessionStorage.setItem("vehiculoReparado", vehiculosJson);
+}
+
+function cargarVehiculosDesdeStorage() {
+    let vehiculosJson = sessionStorage.getItem("vehiculoReparado");
+    if (vehiculosJson) {
+        vehiculos = JSON.parse(vehiculosJson);
+        mostrarVehiculos();
+    }
+}
+
+function obtenerValorInput(id) {
+    let valor = Number(document.getElementById(id).value);
+    if (isNaN(valor) || valor < 0) {
+        Swal.fire("Por favor ingrese un valor válido.");;
+        return null;
+    }
+    return valor;
+}
+
+function calcularConsumoCombustible(precioCombustible, kilometrosTotales) {
+    let consumoPromedio = 12;
+    return (precioCombustible / consumoPromedio) * kilometrosTotales;
+}
+
+function mostrarVehiculos() {
+    let resultadosAmpliados = document.getElementById("resultadosAmpliados");
+    resultadosAmpliados.innerHTML = "";
+
+    vehiculos.forEach((vehiculo, index) => {
+        let viaticos = vehiculo.calcularViaticos();
+        let vehiculoHTML = `<p>Vehículo ${index + 1}: Gasto de viáticos $${parseInt(viaticos)}</p>`;
+        resultadosAmpliados.innerHTML += vehiculoHTML;
+    })
+}
+
 function registrarVehiculo() {
-    let consumo = consumoTotal();
-    let peaje = peajes();
-    let comida = alimentos();
-    let manten = mantenimiento();
+    const precioCombustible = obtenerValorInput("precioCombustible");
+    const kilometrosTotales = obtenerValorInput("kilometrosTotales");
+    const peajes = obtenerValorInput("gastoPeajes");
+    const alimentos = obtenerValorInput("gastoAlimentos");
+    const mantenimiento = obtenerValorInput("gastoMantenimiento");
 
-    vehiculos.push(new Vehiculo(consumo, peaje, comida, manten));
-    console.log("Vehículo registrado:", vehiculos[vehiculos.length - 1]);
-    
-    for (let Vehiculo of vehiculos){
-        console.log("El gasto de viáticos de este vehiculo es de $" + Vehiculo.calcularViaticos())
+    if (precioCombustible !== null && kilometrosTotales !== null && peajes !== null && alimentos !== null && mantenimiento !== null) {
+        const consumoTotal = calcularConsumoCombustible(precioCombustible, kilometrosTotales);
+        const vehiculo = new Vehiculo(consumoTotal, peajes, alimentos, mantenimiento);
+        vehiculos.push(vehiculo);
+        guardarVehiculosEnStorage()
+        mostrarVehiculos();
+        limpiarInputs();
     }
-    
+}
+
+function limpiarInputs() {
+    document.getElementById("precioCombustible").value = "";
+    document.getElementById("kilometrosTotales").value = "";
+    document.getElementById("gastoPeajes").value = "";
+    document.getElementById("gastoAlimentos").value = "";
+    document.getElementById("gastoMantenimiento").value = "";
 }
 
 
+document.getElementById("calcularBtn").addEventListener("click", () => {
+    const precioCombustible = obtenerValorInput("precioCombustible");
+    const kilometrosTotales = obtenerValorInput("kilometrosTotales");
+    const peajes = obtenerValorInput("gastoPeajes");
+    const alimentos = obtenerValorInput("gastoAlimentos");
+    const mantenimiento = obtenerValorInput("gastoMantenimiento");
 
-function agregarVehiculos() {
-    let continuar = true;
-    while (continuar) {
-        registrarVehiculo();
-        let respuesta = prompt("¿Desea agregar otro vehículo? Presione la tecla S para sí, cualquier otra tecla para no.").toUpperCase();
-        continuar = respuesta === "S";
+    if (precioCombustible !== null && kilometrosTotales !== null && peajes !== null && alimentos !== null && mantenimiento !== null) {
+        const consumoTotal = calcularConsumoCombustible(precioCombustible, kilometrosTotales);
+        const vehiculo = new Vehiculo(consumoTotal, peajes, alimentos, mantenimiento);
+        const viaticos = vehiculo.calcularViaticos();
+
+        document.getElementById("resultados").textContent = `El gasto de viáticos de este vehículo es de $${parseInt(viaticos)}`;
     }
-    console.log("No se registran más vehículos.");
-    viaticosTotales();
-}
+});
 
-function viaticosTotales(){
-    let viaticos = 0;
-    for (const vehiculo of vehiculos){
-        viaticos += vehiculo.calcularViaticos()
-}
-alert ("El gasto total de viáticos para todos los vehículos es de $"+viaticos);
-console.log("El gasto total de viáticos para todos los vehículos es de $"+viaticos);
-}
+document.getElementById("resetBtn").addEventListener("click", () => {
+    document.getElementById("precioCombustible").value = "";
+    document.getElementById("kilometrosTotales").value = "";
+    document.getElementById("gastoPeajes").value = "";
+    document.getElementById("gastoAlimentos").value = "";
+    document.getElementById("gastoMantenimiento").value = "";
+    document.getElementById("resultados").textContent = '';
+});
 
+document.getElementById("agregarVehiculoBtn").addEventListener("click", registrarVehiculo);
 
-// Si deseo saber si un vehiculo tiene un alto costo de combustible usando el metodo "Find()"
+document.getElementById("ultimoVehiculoBtn").addEventListener("click", () => {
+    let vehiculosJson = sessionStorage.getItem("vehiculoReparado");
+    if (vehiculosJson) {
+        let vehiculosGuardados = JSON.parse(vehiculosJson);
+        if (vehiculosGuardados.length > 0) {
+            let ultimoVehiculo = vehiculosGuardados[vehiculosGuardados.length - 1];
+            let viaticos = ultimoVehiculo.consumoTotal + ultimoVehiculo.peajes + ultimoVehiculo.alimentos + ultimoVehiculo.mantenimiento;
+            document.getElementById("resultados").textContent = `El gasto de viáticos del último vehículo es de $${parseInt(viaticos)}`;
+        } else {
+            document.getElementById("resultados").textContent = "No hay vehículos almacenados.";
+        }
+    }
+});
 
-function consumoAlto(vehiculo) {
-    return vehiculo.consumoTotal > "20000";
-}
-
-agregarVehiculos();
-
-let findConsumo = vehiculos.find(consumoAlto);
-if (findConsumo) {
-    console.log("Vehículo con alto consumo encontrado:", findConsumo);
-} else {
-    console.log("No se encontraron vehículos con alto consumo.");
-}
+cargarVehiculosDesdeStorage();
