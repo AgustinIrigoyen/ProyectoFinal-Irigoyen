@@ -114,10 +114,9 @@ document.getElementById("ultimoVehiculoBtn").addEventListener("click", () => {
             let ultimoVehiculo = vehiculosGuardados[vehiculosGuardados.length - 1];
             let viaticos = ultimoVehiculo.consumoTotal + ultimoVehiculo.peajes + ultimoVehiculo.alimentos + ultimoVehiculo.mantenimiento;
             document.getElementById("resultados").textContent = `El gasto de viáticos del último vehículo es de $${parseInt(viaticos)}`;
-        } else {
-            document.getElementById("resultados").textContent = "No hay vehículos almacenados.";
         }
     }
+    else {
+        document.getElementById("resultados").textContent = "No hay vehículos almacenados.";
+    }
 });
-
-cargarVehiculosDesdeStorage();
