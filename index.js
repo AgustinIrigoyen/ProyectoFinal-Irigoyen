@@ -53,6 +53,84 @@ function mostrarVehiculos() {
     })
 }
 
+let map;
+let geocoder;
+let distanceService;
+
+function initMap() {
+    // Inicializa el mapa
+    map = new google.maps.Map(document.getElementById("map"), {
+        center: { lat: -34.397, lng: 150.644 },
+        zoom: 6,
+    });
+
+    geocoder = new google.maps.Geocoder();
+    distanceService = new google.maps.DistanceMatrixService();
+
+    document.getElementById("calcularBtn").addEventListener("click", () => {
+        let direccion1 = document.getElementById("direccion1").value;
+        let direccion2 = document.getElementById("direccion2").value;
+
+        if (direccion1 && direccion2) {
+            direccion(direccion1, direccion2);
+        } else {
+            alert("Por favor ingrese ambas direcciones.");
+        }
+    });
+}
+
+function direccion(address1, address2) {
+    geocoder.geocode({ address: address1 }, (results, status) => {
+        if (status === 'OK') {
+            const location1 = results[0].geometry.location;
+
+            geocoder.geocode({ address: address2 }, (results, status) => {
+                if (status === 'OK') {
+                    const location2 = results[0].geometry.location;
+                    calculateDistance(location1, location2);
+                } else {
+                    alert("No se pudo geocodificar la segunda dirección: " + status);
+                }
+            });
+        } else {
+            alert("No se pudo geocodificar la primera dirección: " + status);
+        }
+    });
+}
+
+function calculateDistance(location1, location2) {
+    distanceService.getDistanceMatrix({
+        origins: [location1],
+        destinations: [location2],
+        travelMode: 'DRIVING'
+    }, (response, status) => {
+        if (status === 'OK') {
+            const distance = response.rows[0].elements[0].distance.text;
+            document.getElementById('resultados').textContent = `La distancia entre las ciudades es de: ${distance}`;
+            
+            // Mostrar marcadores en el mapa
+            new google.maps.Marker({
+                position: location1,
+                map: map,
+                title: 'Dirección 1'
+            });
+
+            new google.maps.Marker({
+                position: location2,
+                map: map,
+                title: 'Dirección 2'
+            });
+
+            // Centrar el mapa en la distancia calculada
+            const bounds = new google.maps.LatLngBounds();
+            bounds.extend(location1);
+            bounds.extend(location2);
+            map.fitBounds(bounds);
+        } else {
+            alert("Error al calcular la distancia: " + status);
+        }
+    });
+}
 function registrarVehiculo() {
     const precioCombustible = obtenerValorInput("precioCombustible");
     const kilometrosTotales = obtenerValorInput("kilometrosTotales");
@@ -84,6 +162,7 @@ function registrarVehiculo() {
     }
 }
 
+
 function limpiarInputs() {
     document.getElementById("precioCombustible").value = "";
     document.getElementById("kilometrosTotales").value = "";
@@ -93,7 +172,7 @@ function limpiarInputs() {
 }
 
 
-document.getElementById("calcularBtn").addEventListener("click", () => {
+document.getElementById("calcularBtn1").addEventListener("click", () => {
     const precioCombustible = obtenerValorInput("precioCombustible");
     const kilometrosTotales = obtenerValorInput("kilometrosTotales");
     const peajes = obtenerValorInput("gastoPeajes");
