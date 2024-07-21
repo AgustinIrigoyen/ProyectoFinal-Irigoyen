@@ -67,6 +67,20 @@ function registrarVehiculo() {
         guardarVehiculosEnStorage()
         mostrarVehiculos();
         limpiarInputs();
+        Toastify({
+            text: "Vehículo agregado",
+            duration: 3000,
+            destination: "https://github.com/apvarun/toastify-js",
+            newWindow: true,
+            close: true,
+            gravity: "bottom", // `top` or `bottom`
+            position: "right", // `left`, `center` or `right`
+            stopOnFocus: true, // Prevents dismissing of toast on hover
+            style: {
+                background: "linear-gradient(to right, #3498DB, #1F618D )",
+            },
+            onClick: function () { } // Callback after click
+        }).showToast();
     }
 }
 
