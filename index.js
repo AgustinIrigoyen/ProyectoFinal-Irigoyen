@@ -31,7 +31,10 @@ function cargarVehiculosDesdeStorage() {
 function obtenerValorInput(id) {
     let valor = Number(document.getElementById(id).value);
     if (isNaN(valor) || valor < 0) {
-        Swal.fire("Por favor ingrese un valor válido.");
+        Swal.fire({
+            title: "Por favor ingrese un valor válido.",
+            confirmButtonColor: "#0e6efd"
+        });
         return null;
     }
     return valor;
