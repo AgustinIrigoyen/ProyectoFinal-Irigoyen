@@ -52,6 +52,13 @@ function mostrarVehiculos() {
         resultadosAmpliados.innerHTML += vehiculoHTML;
     });
 }
+function limpiarInputs() {
+    document.getElementById("precioCombustible").value = "";
+    document.getElementById("kilometrosTotales").value = "";
+    document.getElementById("gastoPeajes").value = "";
+    document.getElementById("gastoAlimentos").value = "";
+    document.getElementById("gastoMantenimiento").value = "";
+}
 
 function registrarVehiculo() {
     const precioCombustible = obtenerValorInput("precioCombustible");
@@ -81,15 +88,6 @@ function registrarVehiculo() {
     }
 }
 
-function limpiarInputs() {
-    document.getElementById("precioCombustible").value = "";
-    document.getElementById("kilometrosTotales").value = "";
-    document.getElementById("gastoPeajes").value = "";
-    document.getElementById("gastoAlimentos").value = "";
-    document.getElementById("gastoMantenimiento").value = "";
-}
-
-
 document.getElementById("calcularBtn1").addEventListener("click", () => {
     const precioCombustible = obtenerValorInput("precioCombustible");
     const kilometrosTotales = obtenerValorInput("kilometrosTotales");
@@ -103,6 +101,10 @@ document.getElementById("calcularBtn1").addEventListener("click", () => {
         const viaticos = vehiculo.calcularViaticos();
 
         document.getElementById("resultados").textContent = `El gasto de viáticos de este vehículo es de $${parseInt(viaticos)}`;
+        swal.fire({
+        title: `El gasto de viáticos de este vehículo es de $${parseInt(viaticos)}`,
+        confirmButtonColor: "#0e6efd",
+    })
     }
 });
 
@@ -186,7 +188,10 @@ fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&l
         const address2 = document.getElementById("direccion2").value;
     
         if (!address1 || !address2) {
-            Swal.fire("Por favor ingrese ambas direcciones.");
+            Swal.fire({
+                title: "Por favor ingrese ambas ciudades.",
+                confirmButtonColor: "#0e6efd"
+            });
             return;
         }
             directionsService.route(
@@ -202,9 +207,18 @@ fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&l
                         const distance = route.legs[0].distance.value / 1000;
                         const roundedDistance = Math.round(distance);
                         document.getElementById("kilometrosTotales").value = roundedDistance;
-                        Swal.fire(`La distancia entre las direcciones es ${roundedDistance} km.`);
+                        Swal.fire({
+                            title: `La distancia entre las ciudades es de ${roundedDistance} km.`,
+                            confirmButtonColor: "#0e6efd"
+                        });
                     } else {
-                        Swal.fire("No se pudo calcular la ruta: " + status);
+                        Swal.fire({
+                            title: "No se pudo calcular la ruta.",
+                            text: 'Por favor intente con otro nombre.',
+                            icon: 'question',
+                            confirmButtonText: 'Volver a intentar',
+                            confirmButtonColor: "#0e6efd"
+                        });
                     }
                 }
             );
