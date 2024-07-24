@@ -31,14 +31,14 @@ function cargarVehiculosDesdeStorage() {
 function obtenerValorInput(id) {
     let valor = Number(document.getElementById(id).value);
     if (isNaN(valor) || valor < 0) {
-        Swal.fire("Por favor ingrese un valor válido.");;
+        Swal.fire("Por favor ingrese un valor válido.");
         return null;
     }
     return valor;
 }
 
 function calcularConsumoCombustible(precioCombustible, kilometrosTotales) {
-    let consumoPromedio = 12;
+    const consumoPromedio = 12; // Consumo promedio en km/litro
     return (precioCombustible / consumoPromedio) * kilometrosTotales;
 }
 
@@ -50,87 +50,9 @@ function mostrarVehiculos() {
         let viaticos = vehiculo.calcularViaticos();
         let vehiculoHTML = `<p>Vehículo ${index + 1}: Gasto de viáticos $${parseInt(viaticos)}</p>`;
         resultadosAmpliados.innerHTML += vehiculoHTML;
-    })
-}
-
-let map;
-let geocoder;
-let distanceService;
-
-function initMap() {
-    // Inicializa el mapa
-    map = new google.maps.Map(document.getElementById("map"), {
-        center: { lat: -34.397, lng: 150.644 },
-        zoom: 6,
-    });
-
-    geocoder = new google.maps.Geocoder();
-    distanceService = new google.maps.DistanceMatrixService();
-
-    document.getElementById("calcularBtn").addEventListener("click", () => {
-        let direccion1 = document.getElementById("direccion1").value;
-        let direccion2 = document.getElementById("direccion2").value;
-
-        if (direccion1 && direccion2) {
-            direccion(direccion1, direccion2);
-        } else {
-            alert("Por favor ingrese ambas direcciones.");
-        }
     });
 }
 
-function direccion(address1, address2) {
-    geocoder.geocode({ address: address1 }, (results, status) => {
-        if (status === 'OK') {
-            const location1 = results[0].geometry.location;
-
-            geocoder.geocode({ address: address2 }, (results, status) => {
-                if (status === 'OK') {
-                    const location2 = results[0].geometry.location;
-                    calculateDistance(location1, location2);
-                } else {
-                    alert("No se pudo geocodificar la segunda dirección: " + status);
-                }
-            });
-        } else {
-            alert("No se pudo geocodificar la primera dirección: " + status);
-        }
-    });
-}
-
-function calculateDistance(location1, location2) {
-    distanceService.getDistanceMatrix({
-        origins: [location1],
-        destinations: [location2],
-        travelMode: 'DRIVING'
-    }, (response, status) => {
-        if (status === 'OK') {
-            const distance = response.rows[0].elements[0].distance.text;
-            document.getElementById('resultados').textContent = `La distancia entre las ciudades es de: ${distance}`;
-            
-            // Mostrar marcadores en el mapa
-            new google.maps.Marker({
-                position: location1,
-                map: map,
-                title: 'Dirección 1'
-            });
-
-            new google.maps.Marker({
-                position: location2,
-                map: map,
-                title: 'Dirección 2'
-            });
-
-            // Centrar el mapa en la distancia calculada
-            const bounds = new google.maps.LatLngBounds();
-            bounds.extend(location1);
-            bounds.extend(location2);
-            map.fitBounds(bounds);
-        } else {
-            alert("Error al calcular la distancia: " + status);
-        }
-    });
-}
 function registrarVehiculo() {
     const precioCombustible = obtenerValorInput("precioCombustible");
     const kilometrosTotales = obtenerValorInput("kilometrosTotales");
@@ -142,26 +64,22 @@ function registrarVehiculo() {
         const consumoTotal = calcularConsumoCombustible(precioCombustible, kilometrosTotales);
         const vehiculo = new Vehiculo(consumoTotal, peajes, alimentos, mantenimiento);
         vehiculos.push(vehiculo);
-        guardarVehiculosEnStorage()
+        guardarVehiculosEnStorage();
         mostrarVehiculos();
         limpiarInputs();
         Toastify({
             text: "Vehículo agregado",
-            duration: 3000,
-            destination: "https://github.com/apvarun/toastify-js",
-            newWindow: true,
+            duration: 2000,
             close: true,
-            gravity: "bottom", // `top` or `bottom`
-            position: "right", // `left`, `center` or `right`
-            stopOnFocus: true, // Prevents dismissing of toast on hover
+            gravity: "bottom",
+            position: "right",
+            stopOnFocus: true,
             style: {
                 background: "linear-gradient(to right, #3498DB, #1F618D )",
-            },
-            onClick: function () { } // Callback after click
+            }
         }).showToast();
     }
 }
-
 
 function limpiarInputs() {
     document.getElementById("precioCombustible").value = "";
@@ -188,14 +106,7 @@ document.getElementById("calcularBtn1").addEventListener("click", () => {
     }
 });
 
-document.getElementById("resetBtn").addEventListener("click", () => {
-    document.getElementById("precioCombustible").value = "";
-    document.getElementById("kilometrosTotales").value = "";
-    document.getElementById("gastoPeajes").value = "";
-    document.getElementById("gastoAlimentos").value = "";
-    document.getElementById("gastoMantenimiento").value = "";
-    document.getElementById("resultados").textContent = '';
-});
+document.getElementById("resetBtn").addEventListener("click", limpiarInputs);
 
 document.getElementById("agregarVehiculoBtn").addEventListener("click", registrarVehiculo);
 
@@ -208,8 +119,93 @@ document.getElementById("ultimoVehiculoBtn").addEventListener("click", () => {
             let viaticos = ultimoVehiculo.consumoTotal + ultimoVehiculo.peajes + ultimoVehiculo.alimentos + ultimoVehiculo.mantenimiento;
             document.getElementById("resultados").textContent = `El gasto de viáticos del último vehículo es de $${parseInt(viaticos)}`;
         }
-    }
-    else {
+    } else {
         document.getElementById("resultados").textContent = "No hay vehículos almacenados.";
     }
 });
+
+let map;
+function initMap() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(success, error);
+    } else {
+        console.log("Geolocalización no es soportada por este navegador.");
+    }
+    
+        const geocoder = new google.maps.Geocoder();
+        const directionsService = new google.maps.DirectionsService();
+        const directionsRenderer = new google.maps.DirectionsRenderer();
+    
+    
+        document.getElementById("calcularBtn").addEventListener("click", () => {
+            calculateAndDisplayRoute(directionsService, directionsRenderer, geocoder);
+        });
+    }
+function success(position) {
+    const latitude = position.coords.latitude;
+    const longitude = position.coords.longitude;
+    const userLocation = { lat: latitude, lng: longitude };
+
+    map = new google.maps.Map(document.getElementById('map'), {
+        center: userLocation,
+        zoom: 15
+    });
+
+    fetchLocationDetails(latitude, longitude);
+}
+
+function error() {
+    console.log("No se pudo obtener la ubicación.");
+}
+
+
+function fetchLocationDetails(latitude, longitude) {
+fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`)
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);
+        let infoWindow = new google.maps.InfoWindow({
+            content: `Dirección: ${data.display_name}`    
+        });
+
+        let marker = new google.maps.Marker({
+            position: { lat: latitude, lng: longitude },
+            map: map,
+        });
+
+        marker.addListener('click', function() {
+            infoWindow.open(map, marker);
+        });
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+
+    function calculateAndDisplayRoute(directionsService, directionsRenderer, geocoder) {
+        const address1 = document.getElementById("direccion1").value;
+        const address2 = document.getElementById("direccion2").value;
+    
+        if (!address1 || !address2) {
+            Swal.fire("Por favor ingrese ambas direcciones.");
+            return;
+        }
+            directionsService.route(
+                {
+                    origin: address1,
+                    destination: address2,
+                    travelMode: google.maps.TravelMode.DRIVING
+                },
+                (response, status) => {
+                    if (status === "OK") {
+                        directionsRenderer.setDirections(response);
+                        const route = response.routes[0];
+                        const distance = route.legs[0].distance.value / 1000;
+                        const roundedDistance = Math.round(distance);
+                        document.getElementById("kilometrosTotales").value = roundedDistance;
+                        Swal.fire(`La distancia entre las direcciones es ${roundedDistance} km.`);
+                    } else {
+                        Swal.fire("No se pudo calcular la ruta: " + status);
+                    }
+                }
+            );
+        }

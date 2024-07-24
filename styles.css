@@ -18,11 +18,10 @@ button {
 }
 
 #resultados {
-
     margin-bottom: 5px;
-    font-weight: 700;
+    font-weight: 900;
     margin-left: 20px;
-    padding-top: 30px;
+    padding-top: 0px;
 }
 
 #resultadosAmpliados {
@@ -35,19 +34,19 @@ button {
     width: 50%;
 }
 
-#direccion1{
+#direccion1 {
     width: 15rem;
 }
 
-#direccion2{
+#direccion2 {
     width: 15rem;
 }
 
-#precioCombustible{
+#precioCombustible, #kilometrosTotales, #gastoPeajes, #gastoAlimentos, #gastoMantenimiento {
     width: 30em;
 }
 
-#comb{
-    margin-right: 33rem;
+#comb {
     padding-top: 7px;
+    
 }
