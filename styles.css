@@ -18,10 +18,12 @@ button {
 }
 
 #resultados {
+    font-style: bold;
     margin-bottom: 5px;
-    font-weight: 900;
+    font-size: 30px;
     margin-left: 20px;
     padding-top: 0px;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 #resultadosAmpliados {
@@ -35,11 +37,11 @@ button {
 }
 
 #direccion1 {
-    width: 15rem;
+    width: 20rem;
 }
 
 #direccion2 {
-    width: 15rem;
+    width: 20rem;
 }
 
 #precioCombustible, #kilometrosTotales, #gastoPeajes, #gastoAlimentos, #gastoMantenimiento {

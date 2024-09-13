@@ -13,7 +13,7 @@
 </head>
 
 <body>
-    <h1>Bienvenidos a la calculadora de viáticos</h1>
+    <h1>CALCULADORA DE VIATICOS</h1>
 
     <div class="container">
         <div class="input-group mb-3">
@@ -23,20 +23,22 @@
                 <label for="precioCombustible">Ingrese el precio del litro de combustible.</label>
             </div>
         </div>
-        <p id="comb">Si desea chequear los precios actualizados haga click en el siguiente enlace:
-            <a target="_blank" href="https://surtidores.com.ar/precios/">Surtidores Argentinos</a>
+        <p id="comb">Si desea chequear los precios de combustibles actualizados haga click
+            <a target="_blank" href="https://surtidores.com.ar/precios/">AQUÍ</a>
         </p>
+        <!-- Campos de entrada para direcciones -->
+        <input type="text" id="direccion1" class="form-control mb-3" placeholder="Ingrese el nombre de la primera ciudad">
+        <input type="text" id="direccion2" class="form-control mb-3" placeholder="Ingrese el nombre de la segunda ciudad">
+
+        <button id="calcularBtn" class="btn btn-primary mb-3">Calcular Distancia</button>
+        <hr>
         <div class="input-group mb-3">
             <span class="input-group-text">km</span>
             <div class="form-floating">
                 <input type="text" class="form-control" id="kilometrosTotales" placeholder="Ingrese la cantidad total de kilómetros recorridos">
-                <label for="kilometrosTotales">Ingrese la cantidad total de kilómetros recorridos.</label>
+                <label for="kilometrosTotales">Sino, ingrese la cantidad total de kilómetros recorridos.</label>
             </div>
         </div>
-        <input type="text" id="direccion1" class="form-control mb-3" placeholder="Ingrese la primera ciudad">
-        <input type="text" id="direccion2" class="form-control mb-3" placeholder="Ingrese la segunda ciudad">
-        <button id="calcularBtn" class="btn btn-primary mb-3">Calcular Distancia</button>
-        <hr>
         <h4>Mi ubicación actual:</h4>
         <div id="map" class="mb-3"></div>
 
@@ -74,11 +76,14 @@
         <div id="resultadosAmpliados"></div>
     </div>
 
+    <!-- Incluye el script de Google Maps API con el autocompletado de lugares y el callback para la inicialización -->
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBMIm0ic4VrtQetScnToT1rGRYIYSE9eFo&libraries=places&callback=initAutocomplete"></script>
     <script src="index.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.12.2/dist/sweetalert2.all.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBMIm0ic4VrtQetScnToT1rGRYIYSE9eFo&callback=initMap"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBMIm0ic4VrtQetScnToT1rGRYIYSE9eFo&callback=initMap&libraries=places" async defer></script>
+
 </body>
 
 </html>
